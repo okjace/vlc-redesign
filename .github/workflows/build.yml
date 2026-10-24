@@ -71,11 +71,11 @@ jobs:
           VLC_REDESIGN_NO_SETUP=1 "$img" --version | grep "VLC version"
           export HOME="$RUNNER_TEMP/home" && mkdir -p "$HOME"
           "$img" --install --yes
-          test -x "$HOME/Applications/VLC-Redesign.AppImage"
+          test -x "$HOME/Applications/VLC.AppImage"
           grep -q 'APPIMAGELAUNCHER_DISABLE=1' "$HOME/.local/share/applications/io.github.okjace.vlc_redesign.desktop"
           test -x "$HOME/.local/bin/vlc-redesign"
           "$HOME/.local/bin/vlc-redesign" --uninstall --yes
-          test ! -e "$HOME/Applications/VLC-Redesign.AppImage"
+          test ! -e "$HOME/Applications/VLC.AppImage"
           test ! -e "$HOME/.local/share/applications/io.github.okjace.vlc_redesign.desktop"
           echo "LINUX INSTALLER OK"
 
