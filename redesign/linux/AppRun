@@ -1,0 +1,49 @@
+#!/bin/sh
+# AppRun for the VLC Redesign AppImage.
+# VLC locates plugins, Lua scripts and translations through these variables,
+# so everything resolves inside the mounted AppImage instead of /usr.
+HERE="$(dirname "$(readlink -f "$0")")"
+
+export VLC_PLUGIN_PATH="$HERE/usr/lib/vlc/plugins"
+export VLC_LIB_PATH="$HERE/usr/lib/vlc"
+export VLC_DATA_PATH="$HERE/usr/share/vlc"
+export VLC_LOCALEDIR="$HERE/usr/share/locale"
+export LD_LIBRARY_PATH="$HERE/usr/lib:$HERE/usr/lib/vlc${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export XDG_DATA_DIRS="$HERE/usr/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+export QT_PLUGIN_PATH="$HERE/usr/plugins"
+export QML_IMPORT_PATH="$HERE/usr/qml"
+export QML2_IMPORT_PATH="$HERE/usr/qml"
+
+# Qt environment prepared by linuxdeploy-plugin-qt
+for hook in "$HERE"/apprun-hooks/*.sh; do
+    [ -f "$hook" ] && . "$hook"
+done
+
+SETUP="$HERE/usr/bin/vlc-redesign-setup"
+RECORD="${XDG_DATA_HOME:-$HOME/.local/share}/vlc-redesign/install.ini"
+
+case "$1" in
+    --install|--uninstall|--setup)
+        [ "$1" = "--setup" ] && shift
+        exec "$SETUP" "$@" ;;
+esac
+
+# Like Jace Launcher: the first time the downloaded AppImage runs, offer to
+# install it (applications menu, desktop shortcut, terminal command). Our own
+# launchers start the installed copy, so this only shows for a copy that isn't
+# the installed one. VLC_REDESIGN_NO_SETUP=1 skips it.
+if [ -n "$APPIMAGE" ] && [ -z "$VLC_REDESIGN_NO_SETUP" ] && [ -x "$SETUP" ]; then
+    installed="$(sed -n 's/^path=//p' "$RECORD" 2>/dev/null | head -n1)"
+    if [ "$(readlink -f "$installed" 2>/dev/null)" != "$(readlink -f "$APPIMAGE")" ]; then
+        target="$("$SETUP")"
+        case $? in
+            0)  # installed: start the installed copy (without AppImageLauncher)
+                [ -n "$target" ] && [ -x "$target" ] && \
+                    exec env APPIMAGELAUNCHER_DISABLE=1 VLC_REDESIGN_NO_SETUP=1 "$target" "$@" ;;
+            10) ;;          # "Run without installing"
+            *)  exit 0 ;;   # installed without launching, or cancelled
+        esac
+    fi
+fi
+
+exec "$HERE/usr/bin/vlc" "$@"
