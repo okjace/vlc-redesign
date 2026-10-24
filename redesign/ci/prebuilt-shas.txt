@@ -1,0 +1,6 @@
+# VideoLAN prebuilt-contrib revisions for the upstream base in UPSTREAM_COMMIT
+# (last upstream commit touching each group's contrib inputs; see
+# extras/ci/get-contrib-sha.sh). Pinned so builds don't need git history.
+win64 7ee44ffc93821fee267b5d35fa2b1719bb790880
+macos-x86_64 acfab115eb06b0973a3d2d5eff6a5a82bfdbfc3e
+macos-arm64 acfab115eb06b0973a3d2d5eff6a5a82bfdbfc3e

@@ -211,7 +211,7 @@ for lib in libGL.so.1 libEGL.so.1 libGLX.so.0 libGLdispatch.so.0 libdrm.so.2 lib
     rm -f "$APPDIR/usr/lib/$lib"
 done
 VERSION="$VERSION" ARCH=x86_64 ./appimagetool-x86_64.AppImage --no-appstream \
-    "$APPDIR" "$OUT_DIR/VLC-Redesign-$VERSION-Linux-x86_64.AppImage"
+    "$APPDIR" "$OUT_DIR/VLC-$VERSION-Linux-x86_64.AppImage"
 # Keep the AppImage magic bytes: Nautilus and other file managers open
 # *.AppImage files with AppImageLauncher when it's installed, and it only
 # accepts files that carry them (same as Jace Launcher's AppImage). Our own

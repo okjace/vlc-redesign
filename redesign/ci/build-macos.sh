@@ -32,11 +32,9 @@ export VLC_CONFIGURE_ARGS="${VLC_CONFIGURE_ARGS:-} --disable-sparkle --disable-n
 echo "::endgroup::"
 
 VERSION="$(sed -n 's/^#define PACKAGE_VERSION "\(.*\)"/\1/p' config.h)"
-APP="$BUILD_DIR/VLC Redesign.app"
+APP="$BUILD_DIR/VLC.app"
 
-echo "::group::Prepare VLC Redesign.app"
-rm -rf "$APP"
-cp -Rp "$BUILD_DIR/VLC.app" "$APP"
+echo "::group::Prepare VLC.app"
 # Unsigned CI builds: give the bundle an ad-hoc signature so Apple Silicon
 # will run it (users still need to right-click > Open the first time).
 codesign --force --deep --sign - "$APP"
@@ -53,8 +51,8 @@ echo "::group::Package VLC Redesign.app"
 # Like Jace Launcher, the Mac download is just the .app (zipped so it survives
 # the download). Opened from Downloads, it installs itself into Applications.
 cd "$BUILD_DIR"
-ditto -c -k --sequesterRsrc --keepParent "VLC Redesign.app" \
-    "$OUT_DIR/VLC-Redesign-$VERSION-macOS-$ARCH.app.zip"
+ditto -c -k --sequesterRsrc --keepParent "VLC.app" \
+    "$OUT_DIR/VLC-$VERSION-macOS-$ARCH.app.zip"
 echo "::endgroup::"
 
 ls -la "$OUT_DIR"

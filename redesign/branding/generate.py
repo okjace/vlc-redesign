@@ -26,7 +26,7 @@ ACCENT = "#FF8800"
 TEXT = "#F2F2F2"
 MUTED = "#8A8A8A"
 
-FONT = "Inter, 'Noto Sans', 'DejaVu Sans', sans-serif"
+FONT = "'Inter Variable', Inter, 'Noto Sans', 'DejaVu Sans', sans-serif"
 
 
 def cone_href():
@@ -57,10 +57,10 @@ def defs():
 
 
 def wordmark(x, y, size, anchor="start"):
-    """'VLC' in white followed by 'Redesign' in orange, on one baseline."""
+    """The 'VLC' wordmark."""
     return (f'<text x="{x}" y="{y}" font-family="{FONT}" font-size="{size}" '
             f'font-weight="700" text-anchor="{anchor}" letter-spacing="-0.02em" fill="{TEXT}">'
-            f'VLC <tspan fill="{ACCENT}" font-weight="600">Redesign</tspan></text>')
+            f'VLC</text>')
 
 
 def nsis_welcome():
@@ -77,10 +77,10 @@ def nsis_welcome():
   <text x="82" y="170" font-family="{FONT}" font-size="30" font-weight="800" text-anchor="middle"
         letter-spacing="-0.03em" fill="{TEXT}">VLC</text>
   <text x="82" y="190" font-family="{FONT}" font-size="15" font-weight="600" text-anchor="middle"
-        fill="{ACCENT}">Redesign</text>
+        fill="{ACCENT}">media player</text>
   <rect x="62" y="202" width="40" height="2" rx="1" fill="#2F2F2F"/>
-  <text x="82" y="222" font-family="{FONT}" font-size="7.5" text-anchor="middle" fill="{MUTED}">The all-time favourite</text>
-  <text x="82" y="232" font-family="{FONT}" font-size="7.5" text-anchor="middle" fill="{MUTED}">media player, reimagined.</text>
+  <text x="82" y="222" font-family="{FONT}" font-size="7.5" text-anchor="middle" fill="{MUTED}">The all-time favourite,</text>
+  <text x="82" y="232" font-family="{FONT}" font-size="7.5" text-anchor="middle" fill="{MUTED}">reimagined.</text>
   <text x="96" y="292" font-family="{FONT}" font-size="6.5" text-anchor="middle" fill="{MUTED}">Design: Juxtopposed</text>
   <text x="96" y="302" font-family="{FONT}" font-size="6.5" text-anchor="middle" fill="{MUTED}">VLC: VideoLAN</text>
 </svg>"""
@@ -95,7 +95,7 @@ def nsis_header():
   <path d="M112 0 H150 V57 H138 Z" fill="url(#band)"/>
   {cone(10, 12, 33)}
   <text x="49" y="27" font-family="{FONT}" font-size="16" font-weight="800" letter-spacing="-0.03em" fill="{TEXT}">VLC</text>
-  <text x="49" y="42" font-family="{FONT}" font-size="10" font-weight="600" fill="{ACCENT}">Redesign</text>
+  <text x="49" y="42" font-family="{FONT}" font-size="10" font-weight="600" fill="{ACCENT}">media player</text>
 </svg>"""
 
 
@@ -111,7 +111,7 @@ def dmg_background(scale=1):
   <ellipse cx="181" cy="160" rx="96" ry="80" fill="url(#glow)" opacity="0.6"/>
   {cone(22, 20, 26)}
   {wordmark(54, 39, 18)}
-  <text x="22" y="62" font-family="{FONT}" font-size="11" fill="{MUTED}">Drag VLC Redesign into your Applications folder to install.</text>
+  <text x="22" y="62" font-family="{FONT}" font-size="11" fill="{MUTED}">Drag VLC into your Applications folder to install.</text>
   <!-- drop arrow between the app and Applications -->
   <g fill="none" stroke="{ACCENT}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
     <path d="M250 160 H318" stroke-dasharray="1 9"/>

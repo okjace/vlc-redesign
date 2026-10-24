@@ -101,23 +101,22 @@ decltype (ControlbarProfileModel::m_defaults)
                         PlayerControlbarModel::Videoplayer,
                         {
                             {
+                                /* VLC Redesign: play controls on the left, tools on the right
+                                 * (after "I Redesigned VLC After 25 Years" by Juxtopposed) */
                                 {
-                                    ControlListModel::LANG_BUTTON,
-                                    ControlListModel::BOOKMARK_BUTTON,
-                                    ControlListModel::EXTENDED_BUTTON,
-                                    ControlListModel::NAVIGATION_BUTTONS
-                                },
-                                {
-                                    ControlListModel::SKIP_BACK_BUTTON,
                                     ControlListModel::PREVIOUS_BUTTON,
                                     ControlListModel::PLAY_BUTTON,
-                                    ControlListModel::NEXT_BUTTON,
-                                    ControlListModel::SKIP_FW_BUTTON
+                                    ControlListModel::NEXT_BUTTON
                                 },
                                 {
+                                },
+                                {
+                                    ControlListModel::LANG_BUTTON,
+                                    ControlListModel::PLAYBACK_SPEED_BUTTON,
                                     ControlListModel::VOLUME,
-                                    ControlListModel::RENDERER_BUTTON,
-                                    ControlListModel::FULLSCREEN_BUTTON
+                                    ControlListModel::PLAYLIST_BUTTON,
+                                    ControlListModel::FULLSCREEN_BUTTON,
+                                    ControlListModel::MENU_BUTTON
                                 }
                             }
                         }
@@ -127,11 +126,6 @@ decltype (ControlbarProfileModel::m_defaults)
                         {
                             {
                                 {
-                                    ControlListModel::LANG_BUTTON,
-                                    ControlListModel::BOOKMARK_BUTTON,
-                                    ControlListModel::EXTENDED_BUTTON
-                                },
-                                {
                                     ControlListModel::RANDOM_BUTTON,
                                     ControlListModel::PREVIOUS_BUTTON,
                                     ControlListModel::PLAY_BUTTON,
@@ -139,9 +133,13 @@ decltype (ControlbarProfileModel::m_defaults)
                                     ControlListModel::LOOP_BUTTON
                                 },
                                 {
+                                },
+                                {
+                                    ControlListModel::LANG_BUTTON,
                                     ControlListModel::VOLUME,
-                                    ControlListModel::RENDERER_BUTTON,
-                                    ControlListModel::FULLSCREEN_BUTTON
+                                    ControlListModel::PLAYLIST_BUTTON,
+                                    ControlListModel::FULLSCREEN_BUTTON,
+                                    ControlListModel::MENU_BUTTON
                                 }
                             }
                         }

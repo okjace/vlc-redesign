@@ -17,9 +17,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>VLC Redesign</string>
+	<string>VLC</string>
 	<key>CFBundleDisplayName</key>
-	<string>VLC Redesign</string>
+	<string>VLC</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@VERSION@</string>
 	<key>CFBundlePackageType</key>

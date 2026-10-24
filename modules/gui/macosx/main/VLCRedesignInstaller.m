@@ -15,7 +15,9 @@
 #include <stdlib.h>
 
 static NSString *const kVLCRedesignSkipInstallOffer = @"VLCRedesignSkipInstallOffer";
-static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
+static NSString *const kVLCRedesignAppName = @"VLC.app";
+/* used when the user keeps an existing (e.g. official) VLC.app next to ours */
+static NSString *const kVLCRedesignAltAppName = @"VLC 2.app";
 
 @implementation VLCRedesignInstaller
 
@@ -102,7 +104,7 @@ static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
 + (void)showError:(NSString *)message
 {
     NSAlert *alert = [[NSAlert alloc] init];
-    [alert setMessageText:@"VLC Redesign couldn't be installed"];
+    [alert setMessageText:@"VLC couldn't be installed"];
     [alert setInformativeText:message];
     [alert addButtonWithTitle:@"OK"];
     [alert runModal];
@@ -127,12 +129,46 @@ static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
     NSString *systemApps = @"/Applications";
     NSString *targetDir = [fm isWritableFileAtPath:systemApps]
         ? systemApps : [NSHomeDirectory() stringByAppendingPathComponent:@"Applications"];
-    NSString *target = [targetDir stringByAppendingPathComponent:kVLCRedesignAppName];
-    BOOL upgrade = [fm fileExistsAtPath:target];
+    NSString *ourId = NSBundle.mainBundle.bundleIdentifier;
+    NSString *target = nil;
+    BOOL upgrade = NO;
+    /* our earlier install (as VLC.app or VLC 2.app) gets updated in place */
+    for (NSString *name in @[kVLCRedesignAppName, kVLCRedesignAltAppName]) {
+        NSString *candidate = [targetDir stringByAppendingPathComponent:name];
+        NSString *candidateId = [[NSBundle bundleWithPath:candidate] bundleIdentifier];
+        if ([fm fileExistsAtPath:candidate] && [candidateId isEqualToString:ourId]) {
+            target = candidate;
+            upgrade = YES;
+            break;
+        }
+    }
+    if (!target) {
+        target = [targetDir stringByAppendingPathComponent:kVLCRedesignAppName];
+        if ([fm fileExistsAtPath:target]) {
+            /* a different VLC.app (usually VideoLAN's official one) is installed */
+            NSAlert *conflict = [[NSAlert alloc] init];
+            [conflict setMessageText:@"Another VLC is already in Applications"];
+            [conflict setInformativeText:
+                @"There is already an app called VLC in your Applications folder, probably the official "
+                @"VLC media player. Replace it with this one, or keep both (this one is installed as "
+                @"\"VLC 2\")?"];
+            [conflict addButtonWithTitle:@"Keep Both"];
+            [conflict addButtonWithTitle:@"Replace"];
+            [conflict addButtonWithTitle:@"Cancel"];
+            [NSApp activateIgnoringOtherApps:YES];
+            NSInteger choice = [conflict runModal];
+            if (choice == NSAlertFirstButtonReturn)
+                target = [targetDir stringByAppendingPathComponent:kVLCRedesignAltAppName];
+            else if (choice == NSAlertSecondButtonReturn)
+                upgrade = YES;  /* replace: moved to the Trash below */
+            else
+                return NO;
+        }
+    }
     BOOL fromDownloads = [sourcePath hasPrefix:[NSHomeDirectory() stringByAppendingPathComponent:@"Downloads/"]];
 
     NSView *options = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 380, 78)];
-    NSButton *dock = [self checkbox:@"Add VLC Redesign to the Dock" state:YES y:54];
+    NSButton *dock = [self checkbox:@"Add VLC to the Dock" state:YES y:54];
     NSButton *desktop = [self checkbox:@"Add a shortcut to the Desktop" state:YES y:28];
     NSButton *trash = [self checkbox:@"Move the downloaded copy to the Trash" state:fromDownloads y:2];
     [options addSubview:dock];
@@ -140,11 +176,11 @@ static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
     [options addSubview:trash];
 
     NSAlert *alert = [[NSAlert alloc] init];
-    [alert setMessageText:upgrade ? @"Update VLC Redesign?" : @"Install VLC Redesign?"];
+    [alert setMessageText:upgrade ? @"Update VLC?" : @"Install VLC?"];
     [alert setInformativeText:[NSString stringWithFormat:
-        @"VLC Redesign will be %@ %@, so it shows up in Launchpad and Spotlight and macOS stops "
+        @"VLC will be %@ %@, so it shows up in Launchpad and Spotlight and macOS stops "
         @"warning that it is \"damaged\".\n\n"
-        @"VLC media player with the interface from “I Redesigned VLC After 25 Years” by "
+        @"The VLC media player with the redesigned interface from “I Redesigned VLC After 25 Years” by "
         @"Juxtopposed. VLC is made by VideoLAN; this build is not affiliated with VideoLAN.",
         upgrade ? @"updated in" : @"installed to", targetDir]];
     [alert setAccessoryView:options];
@@ -195,7 +231,7 @@ static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
 
     if ([desktop state] == NSOnState) {
         NSString *link = [[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"]
-                          stringByAppendingPathComponent:@"VLC Redesign"];
+                          stringByAppendingPathComponent:[[target lastPathComponent] stringByDeletingPathExtension]];
         [fm removeItemAtPath:link error:nil];
         [fm createSymbolicLinkAtPath:link withDestinationPath:target error:nil];
     }
@@ -206,7 +242,7 @@ static NSString *const kVLCRedesignAppName = @"VLC Redesign.app";
     /* start the installed copy and let the caller quit this one */
     if ([self run:@"/usr/bin/open" arguments:@[@"-n", target]] != 0) {
         [self showError:[NSString stringWithFormat:
-            @"VLC Redesign was installed to %@ but couldn't be started. Open it from there.", targetDir]];
+            @"VLC was installed to %@ but couldn't be started. Open it from there.", targetDir]];
         return NO;
     }
     return YES;

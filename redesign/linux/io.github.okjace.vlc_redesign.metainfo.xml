@@ -3,11 +3,11 @@
   <id>io.github.okjace.vlc_redesign</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
-  <name>VLC Redesign</name>
+  <name>VLC</name>
   <summary>VLC media player with the interface redesigned by Juxtopposed</summary>
   <description>
     <p>
-      VLC Redesign is an unofficial build of VLC media player whose interface follows
+      This is an unofficial build of the VLC media player whose interface follows
       the design from "I Redesigned VLC After 25 Years" by Juxtopposed: near-black layered
       surfaces, VLC orange as the single accent colour, a slim sidebar and a compact
       player bar.

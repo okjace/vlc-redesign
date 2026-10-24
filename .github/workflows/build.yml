@@ -12,7 +12,7 @@
 #            https://www.youtube.com/watch?v=ERFeOgqk324
 # VLC media player: VideoLAN and contributors, https://www.videolan.org
 
-name: Build VLC Redesign
+name: Build VLC
 
 on:
   push:
@@ -111,8 +111,8 @@ jobs:
           extras/package/win32/build.sh -a x86_64 -p -r
           mkdir -p out
           version="$(sed -n 's/^#define PACKAGE_VERSION "\(.*\)"/\1/p' win64/config.h)"
-          mv win64/vlc-redesign-*-win64.exe "out/VLC-Redesign-${version}-Windows-x64-Setup.exe"
-          mv win64/vlc-${version}-win64.zip "out/VLC-Redesign-${version}-Windows-x64-Portable.zip"
+          mv win64/vlc-redesign-*-win64.exe "out/VLC-${version}-Windows-x64-Setup.exe"
+          mv win64/vlc-${version}-win64.zip "out/VLC-${version}-Windows-x64-Portable.zip"
           ls -la out
 
       - uses: actions/upload-artifact@v4
@@ -186,7 +186,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.release_tag }}
-          name: VLC Redesign ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.release_tag }}
+          name: VLC ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.release_tag }} (redesign)
           target_commitish: ${{ github.sha }}
           prerelease: true
           body_path: redesign/RELEASE_NOTES.md

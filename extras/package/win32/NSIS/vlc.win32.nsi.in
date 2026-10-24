@@ -5,13 +5,14 @@
 
 ; VLC Redesign: an unofficial build of VLC with the interface from Juxtopposed's
 ; "I Redesigned VLC After 25 Years" (https://www.youtube.com/watch?v=ERFeOgqk324).
-; It installs side by side with the official VLC, so every name, folder and
-; registry key below is distinct from VideoLAN's.
-!define PRODUCT_NAME "VLC Redesign"
+; It is shown as plain "VLC" but installs side by side with VideoLAN's VLC
+; media player: its folder (Program Files\VLC vs VideoLAN\VLC), Start menu
+; group, uninstall entry and registry keys are all distinct from VideoLAN's.
+!define PRODUCT_NAME "VLC"
 !define VERSION @VERSION@
 !define PRODUCT_VERSION @VERSION@
-!define PRODUCT_GROUP "VLC Redesign"
-!define PRODUCT_PUBLISHER "VLC Redesign"
+!define PRODUCT_GROUP "VLC"
+!define PRODUCT_PUBLISHER "VLC"
 !define PRODUCT_WEB_SITE "https://github.com/okjace/vlc"
 !define PRODUCT_DIR_REGKEY "Software\VLC Redesign"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -51,7 +52,7 @@ Name "${PRODUCT_NAME}"
 @HAVE_WIN64_FALSE@                   OutFile ..\vlc-redesign-${VERSION}-win32.exe
 @HAVE_WIN64_TRUE@ @HAVE_ARM64_FALSE@ OutFile ..\vlc-redesign-${VERSION}-win64.exe
 @HAVE_WIN64_TRUE@ @HAVE_ARM64_TRUE@  OutFile ..\vlc-redesign-${VERSION}-winarm64.exe
-InstallDir "$@PROGRAMFILES@\VLC Redesign"
+InstallDir "$@PROGRAMFILES@\VLC"
 !ifdef NSIS_LZMA_COMPRESS_WHOLE
 SetCompressor lzma
 !else
@@ -60,7 +61,7 @@ SetCompressor /SOLID lzma
 
 SetOverwrite ifdiff
 CRCCheck on
-BrandingText "VLC Redesign  -  design by Juxtopposed, VLC by VideoLAN"
+BrandingText "VLC  -  redesign by Juxtopposed, VLC media player by VideoLAN"
 
 InstType "$(Name_InstTypeRecommended)"
 InstType "$(Name_InstTypeMinimum)"
@@ -108,8 +109,8 @@ RequestExecutionLevel admin
   ; Welcome page
     !define MUI_PAGE_CUSTOMFUNCTION_PRE PageFastUpdatePre
     !define MUI_WELCOMEPAGE_TITLE_3LINES
-    !define MUI_WELCOMEPAGE_TITLE "Welcome to VLC Redesign ${VERSION}"
-    !define MUI_WELCOMEPAGE_TEXT "VLC Redesign is VLC media player with a new interface, based on the design from $\"I Redesigned VLC After 25 Years$\" by Juxtopposed (youtube.com/@juxtopposed).$\r$\n$\r$\nVLC media player is made by the VideoLAN team and contributors. This is an unofficial build and is not affiliated with VideoLAN.$\r$\n$\r$\nIt installs alongside any existing copy of VLC.$\r$\n$\r$\n$_CLICK"
+    !define MUI_WELCOMEPAGE_TITLE "Welcome to VLC ${VERSION}"
+    !define MUI_WELCOMEPAGE_TEXT "This is the VLC media player with a new interface, based on the design from $\"I Redesigned VLC After 25 Years$\" by Juxtopposed (youtube.com/@juxtopposed).$\r$\n$\r$\nVLC media player is made by the VideoLAN team and contributors. This is an unofficial build and is not affiliated with VideoLAN.$\r$\n$\r$\nIt installs alongside any existing copy of VLC.$\r$\n$\r$\n$_CLICK"
     !insertmacro MUI_PAGE_WELCOME
   ; Optional update page
     Page custom PageReinstall PageLeaveReinstall
@@ -130,7 +131,7 @@ RequestExecutionLevel admin
     !define MUI_PAGE_CUSTOMFUNCTION_PRE PageFastUpdatePre
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_FUNCTION AppExecAs
-    !define MUI_FINISHPAGE_TITLE "VLC Redesign is ready"
+    !define MUI_FINISHPAGE_TITLE "VLC is ready"
     !define MUI_FINISHPAGE_LINK "Watch the redesign video by Juxtopposed"
     !define MUI_FINISHPAGE_LINK_LOCATION "https://www.youtube.com/watch?v=ERFeOgqk324"
     !define MUI_FINISHPAGE_LINK_COLOR "FF8800"

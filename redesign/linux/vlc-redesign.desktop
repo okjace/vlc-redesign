@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=VLC Redesign
+Name=VLC
 GenericName=Media player
-Comment=VLC media player with the redesigned interface by Juxtopposed
+Comment=Play videos and music, with the redesigned interface by Juxtopposed
 Exec=vlc --started-from-file %U
 TryExec=vlc
 Icon=vlc-redesign
@@ -15,4 +15,4 @@ StartupWMClass=vlc
 # Tell AppImageLauncher (and similar integrators) to leave this AppImage alone:
 # no "integrate and run?" prompt, no moving it into ~/Applications.
 X-AppImage-Integrate=false
-X-AppImage-Name=VLC Redesign
+X-AppImage-Name=VLC

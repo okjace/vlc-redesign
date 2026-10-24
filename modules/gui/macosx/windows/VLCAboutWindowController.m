@@ -138,7 +138,7 @@
                                  "underline; color:#0057ae;\">Help and join us!</span></a>"));
 
     /* VLC Redesign fork credits */
-    joinus = [joinus stringByAppendingString:@"</p><p>This build is <b>VLC Redesign</b>, an unofficial fork "
+    joinus = [joinus stringByAppendingString:@"</p><p>This build of VLC is an <b>unofficial redesign</b>, a community fork "
               "whose look is based on <a href=\"https://www.youtube.com/watch?v=ERFeOgqk324\">"
               "&ldquo;I Redesigned VLC After 25 Years&rdquo;</a> by "
               "<a href=\"https://www.youtube.com/@juxtopposed\">Juxtopposed</a>. "

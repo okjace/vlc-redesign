@@ -98,7 +98,7 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
     qtr( "<p>VLC media player is a free and open source media player, encoder, and streamer made by the volunteers of the <a href=\"https://www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> community.</p><p>VLC uses its internal codecs, works on essentially every popular platform, and can read almost all files, CDs, DVDs, network streams, capture cards and other media formats!</p><p><a href=\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;\">Help and join us!</span></a>" ) +
     "</p>"
     /* VLC Redesign fork credits */
-    "<p>This build is <b>VLC Redesign</b>, an unofficial community fork whose interface "
+    "<p>This build of VLC is an <b>unofficial redesign</b>: a community fork whose interface "
     "is based on the design from <a href=\"https://www.youtube.com/watch?v=ERFeOgqk324\">"
     "<span style=\" text-decoration: underline; color:#e07400;\">&ldquo;I Redesigned VLC After 25 Years&rdquo;</span></a> by "
     "<a href=\"https://www.youtube.com/@juxtopposed\"><span style=\" text-decoration: underline; color:#e07400;\">Juxtopposed</span></a>. "

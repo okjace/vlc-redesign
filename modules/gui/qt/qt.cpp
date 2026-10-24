@@ -59,6 +59,10 @@ extern "C" char **environ;
 #include <QQmlError>
 #include <QList>
 #include <QTranslator>
+#include <QPalette>
+#include <QStyleFactory>
+#include <QFontDatabase>
+#include <QFont>
 
 #if __has_include(<rhi/qrhi.h>) // Qt 6.6
 #define RHI_HEADER_AVAILABLE
@@ -427,7 +431,8 @@ vlc_module_begin ()
     add_bool( "qt-embedded-open", false, QT_NATIVEOPEN_TEXT,
                nullptr )
 
-    add_bool( "qt-pin-controls", false, QT_PIN_CONTROLS_TEXT, QT_PIN_CONTROLS_LONGTEXT )
+    /* VLC Redesign: controls sit below the video in one compact bar */
+    add_bool( "qt-pin-controls", true, QT_PIN_CONTROLS_TEXT, QT_PIN_CONTROLS_LONGTEXT )
 
 
     add_obsolete_bool( "qt-advanced-pref" ) /* since 4.0.0 */
@@ -574,6 +579,112 @@ public:
  *****************************************************************************/
 
 static void *Thread( void * );
+
+/* VLC Redesign: give the classic widget dialogs (Preferences, Open Media,
+ * menus, tooltips...) the same look as the QML interface: the redesign's
+ * near-black surfaces, rounded controls and VLC orange as the only accent
+ * (after "I Redesigned VLC After 25 Years" by Juxtopposed). */
+static void applyRedesignWidgetTheme()
+{
+    if (QStyle *fusion = QStyleFactory::create(QStringLiteral("Fusion")))
+        QApplication::setStyle(fusion);
+
+    const QColor window(0x11, 0x11, 0x11), base(0x0A, 0x0A, 0x0A), panel(0x1E, 0x1E, 0x1E),
+                 text(0xF2, 0xF2, 0xF2), muted(0x8A, 0x8A, 0x8A), disabled(0x4A, 0x4A, 0x4A),
+                 accent(0xFF, 0x88, 0x00);
+    QPalette p;
+    for (QPalette::ColorGroup g : { QPalette::Active, QPalette::Inactive })
+    {
+        p.setColor(g, QPalette::Window, window);
+        p.setColor(g, QPalette::WindowText, text);
+        p.setColor(g, QPalette::Base, base);
+        p.setColor(g, QPalette::AlternateBase, panel);
+        p.setColor(g, QPalette::Button, panel);
+        p.setColor(g, QPalette::ButtonText, text);
+        p.setColor(g, QPalette::Text, text);
+        p.setColor(g, QPalette::BrightText, accent);
+        p.setColor(g, QPalette::ToolTipBase, panel);
+        p.setColor(g, QPalette::ToolTipText, text);
+        p.setColor(g, QPalette::Highlight, accent);
+        p.setColor(g, QPalette::HighlightedText, Qt::black);
+        p.setColor(g, QPalette::Link, accent);
+        p.setColor(g, QPalette::PlaceholderText, muted);
+        p.setColor(g, QPalette::Light, QColor(0x2F, 0x2F, 0x2F));
+        p.setColor(g, QPalette::Midlight, QColor(0x26, 0x26, 0x26));
+        p.setColor(g, QPalette::Mid, panel);
+        p.setColor(g, QPalette::Dark, base);
+        p.setColor(g, QPalette::Shadow, Qt::black);
+    }
+    for (QPalette::ColorRole r : { QPalette::WindowText, QPalette::ButtonText, QPalette::Text })
+        p.setColor(QPalette::Disabled, r, disabled);
+    p.setColor(QPalette::Disabled, QPalette::Window, window);
+    p.setColor(QPalette::Disabled, QPalette::Base, base);
+    p.setColor(QPalette::Disabled, QPalette::Button, base);
+    p.setColor(QPalette::Disabled, QPalette::Highlight, disabled);
+    QApplication::setPalette(p);
+
+    qApp->setStyleSheet(QStringLiteral(
+        "QToolTip { color: #F2F2F2; background: #1E1E1E; border: 1px solid #2F2F2F;"
+        "  border-radius: 6px; padding: 4px 6px; }"
+        "QMenu { background: #171717; border: 1px solid #2F2F2F; border-radius: 12px; padding: 6px; }"
+        "QMenu::item { padding: 7px 34px 7px 28px; border-radius: 7px; }"
+        "QMenu::item:selected { background: #262626; color: #FFFFFF; }"
+        "QMenu::item:disabled { color: #4A4A4A; }"
+        "QMenu::separator { height: 1px; background: #262626; margin: 5px 10px; }"
+        "QMenu::icon { padding-left: 8px; }"
+        "QMenuBar { background: #0A0A0A; }"
+        "QMenuBar::item { padding: 4px 10px; border-radius: 6px; background: transparent; }"
+        "QMenuBar::item:selected { background: #1E1E1E; }"
+        "QDialog { background: #111111; }"
+        "QPushButton { background: #1E1E1E; border: 1px solid #2F2F2F; border-radius: 8px;"
+        "  padding: 6px 18px; min-height: 18px; }"
+        "QPushButton:hover { background: #262626; }"
+        "QPushButton:pressed { background: #2F2F2F; }"
+        "QPushButton:default { background: #FF8800; color: black; border: none; font-weight: 600; }"
+        "QPushButton:default:hover { background: #FF9A26; }"
+        "QPushButton:disabled { color: #4A4A4A; background: #171717; }"
+        "QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QTextEdit, QPlainTextEdit {"
+        "  background: #0A0A0A; border: 1px solid #2F2F2F; border-radius: 8px; padding: 4px 8px;"
+        "  selection-background-color: #FF8800; selection-color: black; }"
+        "QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus,"
+        "  QTextEdit:focus, QPlainTextEdit:focus { border-color: #FF8800; }"
+        "QComboBox::drop-down { border: none; width: 22px; }"
+        "QComboBox QAbstractItemView { background: #171717; border: 1px solid #2F2F2F;"
+        "  selection-background-color: #262626; selection-color: #FFFFFF; outline: 0; }"
+        "QTabWidget::pane { border: 1px solid #262626; border-radius: 10px; top: -1px; }"
+        "QTabBar::tab { background: transparent; color: #8A8A8A; padding: 8px 16px;"
+        "  border: none; border-bottom: 2px solid transparent; }"
+        "QTabBar::tab:selected { color: #F2F2F2; border-bottom: 2px solid #FF8800; }"
+        "QTabBar::tab:hover { color: #F2F2F2; }"
+        "QGroupBox { border: 1px solid #262626; border-radius: 12px; margin-top: 16px; padding-top: 8px; }"
+        "QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; color: #8A8A8A; }"
+        "QHeaderView::section { background: #111111; color: #8A8A8A; border: none;"
+        "  border-bottom: 1px solid #262626; padding: 6px 8px; }"
+        "QTreeView, QListView, QTableView, QTreeWidget, QListWidget { background: #0A0A0A;"
+        "  border: 1px solid #1E1E1E; border-radius: 10px; outline: 0; alternate-background-color: #111111; }"
+        "QTreeView::item, QListView::item { padding: 4px; border-radius: 6px; }"
+        "QTreeView::item:selected, QListView::item:selected, QTableView::item:selected {"
+        "  background: #262626; color: #FF8800; }"
+        "QTreeView::item:hover, QListView::item:hover { background: #1A1A1A; }"
+        "QScrollBar:vertical { background: transparent; width: 10px; margin: 2px; }"
+        "QScrollBar:horizontal { background: transparent; height: 10px; margin: 2px; }"
+        "QScrollBar::handle { background: #2F2F2F; border-radius: 3px; min-height: 28px; min-width: 28px; }"
+        "QScrollBar::handle:hover { background: #3A3A3A; }"
+        "QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }"
+        "QScrollBar::add-page, QScrollBar::sub-page { background: none; }"
+        "QSlider::groove:horizontal { height: 4px; background: #262626; border-radius: 2px; }"
+        "QSlider::sub-page:horizontal { background: #FF8800; border-radius: 2px; }"
+        "QSlider::handle:horizontal { background: #F2F2F2; width: 14px; margin: -5px 0; border-radius: 7px; }"
+        "QCheckBox, QRadioButton { spacing: 8px; }"
+        "QCheckBox::indicator { width: 16px; height: 16px; border: 1px solid #3A3A3A;"
+        "  border-radius: 5px; background: #0A0A0A; }"
+        "QCheckBox::indicator:checked { background: #FF8800; border-color: #FF8800; }"
+        "QStatusBar { background: #0A0A0A; color: #8A8A8A; }"
+        "QSplitter::handle { background: #111111; }"
+        "QToolButton { border-radius: 6px; padding: 3px; }"
+        "QToolButton:hover { background: #1E1E1E; }"
+        "QToolButton:checked { background: #262626; }"));
+}
 static void *ThreadCleanup( qt_intf_t *p_intf, CleanupReason cleanupReason );
 
 #ifdef Q_OS_MAC
@@ -1273,7 +1384,7 @@ static void *Thread( void *obj )
     }
 #endif
 
-    app.setApplicationDisplayName( qtr("VLC media player") );
+    app.setApplicationDisplayName( QStringLiteral("VLC") ); /* VLC Redesign: just "VLC" */
     app.setApplicationVersion( QString::fromUtf8(VERSION_MESSAGE) );
 
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
@@ -1462,6 +1573,25 @@ static void *Thread( void *obj )
         }
     }
 #undef QTSTYLE_KEY
+
+    /* VLC Redesign: Inter, the typeface of the redesign (SIL OFL 1.1,
+     * https://rsms.me/inter), for both the QML interface and the dialogs */
+    {
+        const int id = QFontDatabase::addApplicationFont( QStringLiteral(":/Inter.ttf") );
+        const QStringList families = QFontDatabase::applicationFontFamilies( id );
+        if( !families.isEmpty() )
+        {
+            QFont font = QGuiApplication::font();
+            font.setFamily( families.first() );
+            QGuiApplication::setFont( font );
+        }
+    }
+
+    /* VLC Redesign: dark widget dialogs for the default (Night) scheme,
+     * unless the user picked a Qt style of their own */
+    if (s_style.isEmpty()
+        && getSettings()->value( "MainWindow/color-scheme-index", 2 ).toInt() == 2)
+        applyRedesignWidgetTheme();
 
     /* Launch */
     app.exec();

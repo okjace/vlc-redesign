@@ -46,8 +46,8 @@
 namespace {
 
 const char *APP_ID = "io.github.okjace.vlc_redesign";
-const char *APP_NAME = "VLC Redesign";
-const char *FILE_NAME = "VLC-Redesign.AppImage";
+const char *APP_NAME = "VLC";
+const char *FILE_NAME = "VLC.AppImage";
 const int EXIT_RUN_UNINSTALLED = 10;
 
 QString env(const char *name) { return QString::fromLocal8Bit(qgetenv(name)); }
@@ -180,13 +180,13 @@ bool install(const Options &o, Log log, QString *installed)
 {
     const QString src = runningAppImage();
     if (src.isEmpty() || !QFileInfo::exists(src)) {
-        log("Setup must be started from the VLC Redesign AppImage.");
+        log("Setup must be started from the VLC AppImage.");
         return false;
     }
     const QString dst = QDir(o.dir).absoluteFilePath(FILE_NAME);
     QStringList parts;
 
-    log(QString("Copying VLC Redesign to %1").arg(dst));
+    log(QString("Copying VLC to %1").arg(dst));
     if (QFileInfo(src).canonicalFilePath() != QFileInfo(dst).canonicalFilePath()) {
         QDir().mkpath(o.dir);
         const QString tmp = dst + ".part";
@@ -212,7 +212,7 @@ bool install(const Options &o, Log log, QString *installed)
 
     const QByteArray entry = desktopEntry(dst);
     if (o.menu) {
-        log("Adding VLC Redesign to the applications menu");
+        log("Adding VLC to the applications menu");
         if (writeFile(menuFile(), entry, true))
             parts << "menu";
     }
@@ -238,7 +238,7 @@ bool install(const Options &o, Log log, QString *installed)
             parts << "appstream";
     }
     if (o.defaultPlayer && o.menu) {
-        log("Making VLC Redesign the default media player");
+        log("Making VLC the default media player");
         QStringList mimes;
         for (const QString &line : QString::fromUtf8(entry).split('\n'))
             if (line.startsWith("MimeType="))
@@ -251,6 +251,10 @@ bool install(const Options &o, Log log, QString *installed)
     refreshMenus();
 
     QSettings s(recordFile(), QSettings::IniFormat);
+    const QString previous = s.value("path").toString();
+    if (!previous.isEmpty() && QFileInfo(previous).canonicalFilePath() != QFileInfo(dst).canonicalFilePath()
+        && QFileInfo(previous).fileName().endsWith(".AppImage"))
+        QFile::remove(previous);   // older install (e.g. VLC-Redesign.AppImage)
     s.setValue("path", dst);
     s.setValue("version", version());
     s.setValue("parts", parts);
@@ -345,17 +349,17 @@ public:
     explicit WelcomePage(bool upgrade)
     {
         auto *lay = new QVBoxLayout(this);
-        auto *title = new QLabel(upgrade ? "Update VLC Redesign" : "Welcome to VLC Redesign");
+        auto *title = new QLabel(upgrade ? "Update VLC" : "Welcome to VLC");
         title->setObjectName("title");
         lay->addWidget(title);
         lay->addSpacing(8);
         auto *text = new QLabel(
-            QString("<p style='font-size:14px'>This will set up <b>VLC Redesign %1</b> on your computer.</p>"
-                    "<p>VLC media player with the interface from "
+            QString("<p style='font-size:14px'>This will set up <b>VLC %1</b> on your computer.</p>"
+                    "<p>The VLC media player with the redesigned interface from "
                     "<a href='https://www.youtube.com/watch?v=ERFeOgqk324'>“I Redesigned VLC After 25 Years”</a> "
                     "by Juxtopposed.</p>"
                     "<p>The next steps will:</p>"
-                    "<ul><li>choose where to install VLC Redesign</li>"
+                    "<ul><li>choose where to install VLC</li>"
                     "<li>add it to your applications menu and desktop</li>"
                     "<li>register it with GNOME Software and other app centers</li></ul>")
                 .arg(version()));
@@ -381,7 +385,7 @@ public:
     {
         setTitle("Install location and shortcuts");
         auto *lay = new QVBoxLayout(this);
-        lay->addWidget(new QLabel("Install VLC Redesign to:"));
+        lay->addWidget(new QLabel("Install VLC to:"));
         auto *row = new QHBoxLayout;
         const QString current = installedPath();
         path = new QLineEdit(current.isEmpty() ? home() + "/Applications" : QFileInfo(current).absolutePath());
@@ -396,13 +400,13 @@ public:
         desktop = new QCheckBox(QString("Create a desktop shortcut  (%1)").arg(desktopDir()));
         terminal = new QCheckBox("Add the  vlc-redesign  terminal command");
         appstream = new QCheckBox("Show in GNOME Software, KDE Discover and other app centers");
-        defaultPlayer = new QCheckBox("Make VLC Redesign the default player for audio and video files");
+        defaultPlayer = new QCheckBox("Make VLC the default player for audio and video files");
         for (QCheckBox *c : {menu, desktop, terminal, appstream})
             c->setChecked(true);
         for (QCheckBox *c : {menu, desktop, terminal, appstream, defaultPlayer})
             lay->addWidget(c);
         lay->addStretch();
-        lay->addWidget(muted("Shortcuts start VLC Redesign directly, so AppImageLauncher (which crashes on "
+        lay->addWidget(muted("Shortcuts start VLC directly, so AppImageLauncher (which crashes on "
                              "some Wayland desktops) is never involved."));
 
         QObject::connect(browse, &QPushButton::clicked, this, [this] {
@@ -421,7 +425,7 @@ public:
             d.setPath(QFileInfo(d.absolutePath()).absolutePath());
         const QStorageInfo info(d.absolutePath());
         const qint64 size = QFileInfo(runningAppImage()).size();
-        space->setText(QString("%1 GB free there. VLC Redesign needs about %2 MB.")
+        space->setText(QString("%1 GB free there. VLC needs about %2 MB.")
                            .arg(info.bytesAvailable() / 1073741824.0, 0, 'f', 1)
                            .arg(qMax<qint64>(1, size / 1048576)));
     }
@@ -509,7 +513,7 @@ public:
         summary->setWordWrap(true);
         lay->addWidget(summary);
         lay->addStretch();
-        launch = new QCheckBox("Start VLC Redesign now");
+        launch = new QCheckBox("Start VLC now");
         launch->setChecked(true);
         lay->addWidget(launch);
     }
@@ -533,8 +537,8 @@ public:
         if (QFileInfo(runningAppImage()).canonicalFilePath() != QFileInfo(inst->installed).canonicalFilePath())
             lines << QString("<br>You can delete the downloaded file now:<br><i>%1</i>")
                          .arg(runningAppImage().toHtmlEscaped());
-        lines << "<br>To uninstall later, right-click VLC Redesign in the applications menu → "
-                 "<i>Uninstall VLC Redesign</i>, or run  <b>vlc-redesign --uninstall</b>.";
+        lines << "<br>To uninstall later, right-click VLC in the applications menu → "
+                 "<i>Uninstall VLC</i>, or run  <b>vlc-redesign --uninstall</b>.";
         summary->setText(lines.join("<br>"));
     }
 };
@@ -548,7 +552,7 @@ public:
 
     SetupWizard()
     {
-        setWindowTitle("VLC Redesign Setup");
+        setWindowTitle("VLC Setup");
         setWizardStyle(QWizard::ClassicStyle);
         setPixmap(QWizard::WatermarkPixmap, sideArt().scaledToHeight(440, Qt::SmoothTransformation));
         setOption(QWizard::NoBackButtonOnLastPage);
@@ -589,14 +593,14 @@ int main(int argc, char **argv)
     const bool yes = args.contains("--yes");
 
     if (args.contains("--uninstall")) {
-        if (!yes && QMessageBox::question(nullptr, "Uninstall VLC Redesign",
-                "<b>Uninstall VLC Redesign?</b><br><br>This removes the app, its menu entry, desktop "
+        if (!yes && QMessageBox::question(nullptr, "Uninstall VLC",
+                "<b>Uninstall VLC?</b><br><br>This removes the app, its menu entry, desktop "
                 "shortcut and terminal command. Your VLC settings and media library are kept.")
                 != QMessageBox::Yes)
             return 1;
         uninstall();
         if (!yes)
-            QMessageBox::information(nullptr, "Uninstalled", "VLC Redesign has been uninstalled.");
+            QMessageBox::information(nullptr, "Uninstalled", "VLC has been uninstalled.");
         return 0;
     }
 

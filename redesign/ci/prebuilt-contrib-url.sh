@@ -24,7 +24,7 @@ case "$GROUP" in
     macos*)             paths+=(extras/package/macosx) ;;
 esac
 
-SHA="$(awk -v g="$GROUP" '$1 == g { print $2 }' "$ROOT/redesign/ci/contrib-shas.txt")"
+SHA="$(awk -v g="$GROUP" '$1 == g { print $2 }' "$ROOT/redesign/ci/prebuilt-shas.txt")"
 if [ -z "$SHA" ]; then
     SHA="$(git -C "$ROOT" rev-list -1 "$BASE" -- "${paths[@]}" 2>/dev/null || true)"
 fi
