@@ -1,89 +1,54 @@
-# VLC Redesign
+# VLC — redesigned
 
 <p align="center">
-  <img src="redesign/branding/vlc-redesign-512.png" width="128" alt="VLC Redesign icon">
+  <img src="redesign/branding/vlc-redesign-512.png" width="128" alt="VLC icon">
 </p>
 
-**VLC Redesign** is an unofficial fork of [VLC media player](https://www.videolan.org/vlc/)
-whose interface is restyled after the design in
-**[“I Redesigned VLC After 25 Years”](https://www.youtube.com/watch?v=ERFeOgqk324)
-by [Juxtopposed](https://www.youtube.com/@juxtopposed)**.
+An unofficial build of **[VLC media player](https://www.videolan.org/vlc/)** with its interface redesigned after
+**[“I Redesigned VLC After 25 Years”](https://www.youtube.com/watch?v=ERFeOgqk324) by [Juxtopposed](https://www.youtube.com/@juxtopposed)**.
+It's simply called **VLC**, and it installs side by side with VideoLAN's VLC without touching it.
 
 > **Credits**
 > - **Design:** Juxtopposed, from the video [“I Redesigned VLC After 25 Years”](https://www.youtube.com/watch?v=ERFeOgqk324).
->   Go watch it and support the channel.
-> - **VLC media player:** the [VideoLAN](https://www.videolan.org) team and VLC's contributors.
->   Everything that makes this a media player is their work. This fork only changes how it looks.
+> - **VLC media player:** the [VideoLAN](https://www.videolan.org) team and VLC's contributors. Everything that makes
+>   this a media player is their work; this project only changes how it looks.
 >
-> This project is not affiliated with or endorsed by VideoLAN or Juxtopposed.
-> “VLC” and the cone logo are trademarks of the VideoLAN association.
+> Not affiliated with or endorsed by VideoLAN or Juxtopposed. “VLC” and the cone logo are trademarks of the VideoLAN association.
 
-<p align="center">
-  <img src="redesign/branding/previews/linux-home.png" width="560" alt="VLC Redesign home screen">
-</p>
+| Home | Player | Dialogs |
+| --- | --- | --- |
+| <img src="redesign/branding/previews/home.png" width="260"> | <img src="redesign/branding/previews/player.png" width="260"> | <img src="redesign/branding/previews/dialogs.png" width="260"> |
 
-## Downloads
+## Download
 
-Grab the latest installers from **[Releases](../../releases)**:
+Get the latest installers from **[Releases](../../releases/latest)**. Like [Jace Launcher](https://github.com/okjace/jace-launcher),
+each one installs itself:
 
-| Platform | Package |
-| --- | --- |
-| Windows x64 | `Setup.exe` (NSIS with the dark redesign theme) and a portable `.zip` |
-| macOS Apple Silicon (arm64) | `VLC Redesign.app`, which installs itself into Applications when first opened |
-| macOS Intel (x86_64) | `VLC Redesign.app`, which installs itself into Applications when first opened |
-| Linux x86_64 | `.AppImage` with a setup wizard; works even where AppImageLauncher crashes |
+| Platform | File | How it installs |
+| --- | --- | --- |
+| Windows x64 | `VLC-<version>-Windows-x64-Setup.exe` | Dark setup wizard; also a portable `.zip` |
+| macOS Apple Silicon / Intel | `VLC-<version>-macOS-<arch>.app.zip` | Open `VLC.app`: it moves itself into Applications, adds Dock and Desktop shortcuts and clears the "damaged" warning |
+| Linux x86_64 | `VLC-<version>-Linux-x86_64.AppImage` | Double-click: a setup wizard installs it to `~/Applications` with a menu entry, desktop shortcut and `vlc-redesign` command |
 
-Builds are published for both **VLC 4.0** (development, `master`) and **VLC 3.0** (stable, `redesign-3.0` branch).
+The builds aren't signed. On macOS, right-click → **Open** the first time; on Windows, SmartScreen → **More info** → **Run anyway**.
 
-All of them are built by GitHub Actions ([`.github/workflows/build.yml`](.github/workflows/build.yml)).
-The builds are unsigned, so see the first-launch notes in each release.
+## What's redesigned (VLC 4.0)
 
-## What's changed from upstream VLC
+- **Look:** layered near-black surfaces with VLC orange (`#FF8800`) as the only accent; dark by default; rounder corners
+  everywhere; [Inter](https://rsms.me/inter) as the typeface (bundled, SIL OFL).
+- **Player bar:** one compact bar pinned under the video: time, an orange seek bar and the remaining time on one line;
+  previous / an orange play tile / next on the left; tracks, speed, volume, playlist, fullscreen and menu on the right.
+- **Sidebar:** the current page sits on an orange-tinted tile with an orange indicator.
+- **Dialogs and menus:** Preferences, Open Media, right-click menus and tooltips use the same dark, rounded,
+  orange-accent theme instead of the system look.
+- **macOS:** dark appearance and VLC orange accent in the native interface.
+- **Installers:** self-installing apps on every platform, with matching artwork (`redesign/branding/generate.py`).
 
-Interface (Qt/QML, used on Windows and Linux):
-- A new dark palette taken from the video: layered near-black surfaces (`#0A0A0A` → `#2F2F2F`),
-  soft separators, and VLC orange (`#FF8800`) as the only accent
-  ([`systempalette.cpp`](modules/gui/qt/style/systempalette.cpp)).
-- Dark ("Night") is the default color scheme.
-- Rounder corners on buttons, covers, nav items and the main view ([`VLCStyle.qml`](modules/gui/qt/style/VLCStyle.qml)).
-- The play button is now a rounded-square orange tile with a black glyph, like in the video
-  ([`PlayButton.qml`](modules/gui/qt/player/qml/controlbarcontrols/PlayButton.qml)).
-- Sidebar: the current page gets an orange-tinted tile and indicator.
-- Credits in *Help → About*.
+Builds run on GitHub Actions ([`.github/workflows/build.yml`](.github/workflows/build.yml)); push a `v*` tag to publish a release.
 
-macOS (native Cocoa interface):
-- Always uses the dark appearance, with VLC orange as the accent instead of the system accent.
-- Redesign tones for separators, slider tracks and borders; credits in *About VLC*.
-- Ships as **VLC Redesign.app** with its own bundle id (`io.github.okjace.vlc-redesign`). Sparkle
-  auto-update is disabled so it never "updates" itself back to official VLC.
-
-Installers ([`redesign/branding`](redesign/branding)):
-- **Windows:** dark welcome/finish pages with custom side art, a branded header and a custom welcome text
-  and finish link. It installs side by side with official VLC (separate install dir, registry keys and
-  Start-menu folder, and the uninstaller never touches VideoLAN's keys).
-- **macOS:** like [Jace Launcher](https://github.com/okjace/jace-launcher), the download is just the `.app`. Opened
-  from Downloads, it offers to copy itself into Applications, clear the quarantine flag ("damaged" warning),
-  add Dock and Desktop shortcuts, and then relaunches the installed copy.
-- **Linux:** like Jace Launcher, the AppImage opens a setup wizard (in the redesign style) that installs it to
-  `~/Applications` with an applications-menu entry, desktop shortcut, `vlc-redesign` command and AppStream
-  metadata. Launchers start it with `APPIMAGELAUNCHER_DISABLE=1`, and the AppImage magic bytes are cleared, so
-  AppImageLauncher, which aborts on Wayland desktops such as niri, never intercepts it.
-
-| DMG window | Windows installer |
-| --- | --- |
-| <img src="redesign/branding/previews/dmg-background.png" width="420"> | <img src="redesign/branding/previews/nsis-welcome.png" width="120"> <img src="redesign/branding/previews/nsis-header.png" width="150"> |
-
-To regenerate the artwork, run `redesign/branding/generate.py --font-dir <dir with Inter .ttf>`.
-
-## Building locally
-
-- Linux: `redesign/ci/build-linux.sh` (Ubuntu 24.04)
-- macOS: `redesign/ci/build-macos.sh arm64` or `x86_64`
-- Windows: cross-compiled in VideoLAN's `vlc-debian-win64-posix` Docker image with
-  `extras/package/win32/build.sh -a x86_64 -p -r`
-
-This fork is based on upstream commit [`429df92c508f98038ac992772fea1fec1322c9f9`](https://code.videolan.org/videolan/vlc/-/commit/429df92c508f98038ac992772fea1fec1322c9f9)
-(VLC 4.0 development branch). It is recorded in [`redesign/UPSTREAM_COMMIT`](redesign/UPSTREAM_COMMIT).
+This repository is a snapshot of VLC upstream commit [`429df92c5`](https://code.videolan.org/videolan/vlc/-/commit/429df92c508f98038ac992772fea1fec1322c9f9)
+(VLC 4.0 development branch) plus the redesign. The VLC 3.0.24 version lives in
+[okjace/vlc](https://github.com/okjace/vlc/tree/redesign-3.0).
 
 ---
 

@@ -102,6 +102,9 @@
         <file alias="VLCIcons.ttf">pixmaps/VLCIcons.ttf</file>
         <file alias="Inter.ttf">pixmaps/fonts/InterVariable.ttf</file>
     </qresource>
+    <qresource prefix="/redesign">
+        <file alias="chevron-down.svg">pixmaps/redesign/chevron-down.svg</file>
+    </qresource>
     <qresource prefix="/prefsmenu">
         <file alias="advprefs_audio.svg">pixmaps/prefs/advprefs_audio.svg</file>
         <file alias="advprefs_codec.svg">pixmaps/prefs/advprefs_codec.svg</file>
